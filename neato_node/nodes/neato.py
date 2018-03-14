@@ -74,7 +74,7 @@ class NeatoNode:
         self.x = 0                  # position in xy plane
         self.y = 0
         self.th = 0
-        then = rospy.Time.now()
+        then = rospy.Time.now() + rospy.Duration(1.0)
 
         # things that don't ever change
  #       scan_link = rospy.get_param('~frame_id', 'base_laser_link')

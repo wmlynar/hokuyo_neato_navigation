@@ -1,0 +1,119 @@
+<!-- 
+  Simulate a differential drive robot with the teb_local_planner in stage:
+  - stage
+  - map_server
+  - move_base
+  - static map
+  - amcl
+  - rviz view
+ -->
+<launch>
+
+  <!--  ************** Global Parameters ***************  -->
+  <!--param name="/use_sim_time" value="true"/-->
+  <param name="/use_sim_time" value="false"/>
+
+  <!--  ************** Stage Simulator ***************  -->
+  <!--node pkg="stage_ros" type="stageros" name="stageros" args="$(find neato_navigation)/stage/maze_diff_drive_woj.world"-->
+  <!--node pkg="stage_ros" type="stageros" name="stageros" args="$(find neato_navigation)/stage/maze_diff_drive_inovatica_05.world">
+    <remap from="base_scan" to="scan"/>
+  </node-->
+
+  <node pkg="tf" type="static_transform_publisher" name="laser_to_base"                                                                                                                                            
+    args="-0.1 0 0 0 0 0 base_link base_laser_link 50" />                                                                                                                                                          
+                                                                                                                                                                                                                   
+  <!--  ************** Neato ***************  -->
+  <node name="neato" pkg="neato_node" type="neato.py" output="screen">                                                                                                                                             
+    <param name="port" value="/dev/ttyACM0" />                                                                                                                                                                     
+  </node>                                                                                                                                                                                                          
+                                                                                                                                                                                                                   
+  <node pkg="urg_node" type="urg_node" name="hokuyo_node">                                                                                                                                                         
+    <param name="serial_port" value="/dev/ttyACM1"/>                                                                                                                                                               
+    <param name="scan" value="/scan"/>                                                                                                                                                                             
+    <param name="frame_id" value="base_laser_link"/>                                                                                                                                                               
+    <param name="publish_intensity" value="true" />                                                                                                                                                                
+  </node>                                                                                                                                                                                                          
+
+  <!--  ************** Navigation ***************  -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find neato_navigation)/cfg/diff_drive_woj/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find neato_navigation)/cfg/diff_drive_woj/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find neato_navigation)/cfg/diff_drive_woj/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find neato_navigation)/cfg/diff_drive_woj/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find neato_navigation)/cfg/diff_drive_woj/teb_local_planner_params.yaml" command="load" />
+
+    <param name="base_global_planner" value="global_planner/GlobalPlanner" />
+    <param name="planner_frequency" value="1.0" />
+    <param name="planner_patience" value="5.0" />
+
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+    <param name="controller_frequency" value="5.0" />
+    <param name="controller_patience" value="15.0" />
+  </node>
+
+  <!--  ****** Maps *****  -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find neato_navigation)/maps/map_inovatica_05.yaml" output="screen">
+    <param name="frame_id" value="/map"/>
+  </node>
+
+  <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop">
+    <remap from="cmd_vel" to="cmd_vel"/>
+  </node>
+
+
+  <!-- configure laser input --> 
+  <arg name="nav_laser_topic" default="scan" />
+  <arg name="nav_laser_frame" default="base_laser_link" />
+
+  <!-- configure intermediate frames -->
+  <arg name="base_frame" default="base_link" />
+  <arg name="odom_frame" default="odom" />
+  <arg name="map_frame" default="map" />
+
+  <!-- configure intermediate topics -->
+  <arg name="amcl_map_service" default="static_map" />
+  <arg name="amcl_map_topic" default="map" />
+  <arg name="amcl_pose_with_covariance_topic" default="amcl_pose" />
+  <arg name="amcl_particles_topic" default="amcl_particles" />
+  
+
+  <node pkg="amcl" type="amcl" name="amcl" >
+    <remap from="scan" to="$(arg nav_laser_topic)" />
+    <remap from="map" to="$(arg amcl_map_topic)" />
+    <remap from="static_map" to="$(arg amcl_map_service)" />
+    
+    <remap from="slam_out_pose" to="$(arg amcl_pose_with_covariance_topic)" />
+    <remap from="particlecloud" to="$(arg amcl_particles_topic)" />
+
+    <param name="base_frame_id" value="$(arg base_frame)" />
+    <param name="odom_frame_id" value="$(arg odom_frame)" />
+    <param name="global_frame_id" value="$(arg map_frame)" />
+
+    <!-- use map service instead of map topic -->
+    <param name="use_map_topic" value="false" />
+
+    <param name="min_particles " value="1000" />
+    <param name="max_particles " value="10000" />
+
+    <param name="initial_pose_x" value="1" />
+    <param name="initial_pose_y" value="1" />
+    <param name="initial_pose_a" value="0" />
+
+    <param name="initial_cov_xx" value="2" />
+    <param name="initial_cov_yy" value="2" />
+    <param name="initial_cov_aa" value="1" />
+
+    <param name="laser_min_range" value="0" />
+    <param name="laser_max_range" value="10" />
+    <param name="laser_max_beams" value="360" />
+
+    <param name="odom_alpha1" value="0.1" />
+    <param name="odom_alpha2" value="0.1" />
+    <param name="odom_alpha3" value="0.1" />
+    <param name="odom_alpha4" value="0.1" />
+  </node>
+
+  <!--  **************** Visualisation ****************  -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find neato_navigation)/cfg/rviz_navigation_woj.rviz"/>
+
+</launch>

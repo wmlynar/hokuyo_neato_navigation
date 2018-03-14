@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   stage_ros
   teb_local_planner
   teleop_twist_keyboard
+  global_planner
 )
 
 ## System dependencies are found with CMake's conventions
