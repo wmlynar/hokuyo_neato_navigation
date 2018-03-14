@@ -1,0 +1,18 @@
+<!-- 
+  Simulate a differential drive robot with the teb_local_planner in stage:
+  - stage
+  - map_server
+  - move_base
+  - static map
+  - amcl
+  - rviz view
+ -->
+<launch>
+
+  <!--  ************** Global Parameters ***************  -->
+  <param name="/use_sim_time" value="true"/>
+
+  <!--  **************** Visualisation ****************  -->
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find neato_navigation)/cfg/rviz_navigation_woj.rviz"/>
+
+</launch>
