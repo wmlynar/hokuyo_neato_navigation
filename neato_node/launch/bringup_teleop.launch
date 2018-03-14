@@ -2,7 +2,7 @@
   <param name="use_sim_time" value="false"/>
 
   <node pkg="tf" type="static_transform_publisher" name="laser_to_base" 
-    args="-0.1 0 0 0 0 0 base_link laser_link 50" />
+    args="-0.1 0 0 0 0 0 base_link base_laser_link 50" />
 
   <node name="neato" pkg="neato_node" type="neato.py" output="screen">
     <param name="port" value="/dev/ttyACM0" />
@@ -11,7 +11,7 @@
   <node pkg="urg_node" type="urg_node" name="hokuyo_node">
     <param name="serial_port" value="/dev/ttyACM1"/>
     <param name="scan" value="/scan"/>
-    <param name="frame_id" value="laser_link"/>
+    <param name="frame_id" value="base_laser_link"/>
     <param name="publish_intensity" value="true" />
   </node>
 
