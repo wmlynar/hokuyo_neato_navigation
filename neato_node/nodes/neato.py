@@ -64,7 +64,7 @@ class NeatoNode:
         self.distPub = rospy.Publisher('dist', Vector3Stamped, queue_size=10)
 #        self.buttonPub = rospy.Publisher('button', Button, queue_size=10)
 #        self.sensorPub = rospy.Publisher('sensor', Sensor, queue_size=10)
-#        self.odomBroadcaster = TransformBroadcaster()
+        self.odomBroadcaster = TransformBroadcaster()
         self.cmd_vel = [0, 0]
         self.old_vel = self.cmd_vel
 
@@ -183,8 +183,8 @@ class NeatoNode:
 #                self.scanPub.publish(scan)
 #                self.prevRanges = scan.ranges
 
-             self.odomPub.publish(odom)
-             self.distPub.publish(dist)
+            self.odomPub.publish(odom)
+            self.distPub.publish(dist)
              
 #            button_enum = ("Soft_Button", "Up_Button", "Start_Button", "Back_Button", "Down_Button")
 #            sensor_enum = ("Left_Side_Bumper", "Right_Side_Bumper", "Left_Bumper", "Right_Bumper")
