@@ -1,0 +1,47 @@
+TebLocalPlannerROS:
+
+ odom_topic: odom
+ map_frame: odom
+    
+ # Trajectory
+  
+ global_plan_overwrite_orientation: True
+ allow_init_with_backwards_motion: True
+ max_global_plan_lookahead_dist: 1.0
+    
+ # Robot
+         
+ max_vel_x: 0.2
+ max_vel_x_backwards: 0.2
+ max_vel_y: 0.0
+ max_vel_theta: 1
+ acc_lim_x: 0.5
+ acc_lim_theta: 0.5
+ min_turning_radius: 0.5
+ wheelbase: 1
+ cmd_angle_instead_rotvel: False
+
+ footprint_model:
+   type: "point"
+
+ # GoalTolerance
+    
+ xy_goal_tolerance: 0.2
+ yaw_goal_tolerance: 0.05
+ free_goal_vel: False
+    
+ # Obstacles
+    
+ min_obstacle_dist: 0.025 # This value must also include our robot radius, since footprint_model is set to "point".
+ inflation_dist: 0.5 # Buffer zone around obstacles with non-zero penalty costs (should be larger than min_obstacle_dist in order to take effect)
+ dynamic_obstacle_inflation_dist: 0.5 # Buffer zone around predicted locations of dynamic obstacles with non-zero penalty costs (should be larger than min_obstacle_dist in order to take effect)
+ include_dynamic_obstacles: True
+ include_costmap_obstacles: True
+ costmap_obstacles_behind_robot_dist: 10
+
+ # Homotopy Class Planner
+ enable_homotopy_class_planning: False
+
+ # Recovery
+ oscillation_recovery: False
+ 

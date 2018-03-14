@@ -1,16 +1,13 @@
 TebLocalPlannerROS:
 
  odom_topic: odom
+ map_frame: odom
     
  # Trajectory
   
- teb_autosize: True
- dt_ref: 0.3
- dt_hysteresis: 0.1
  global_plan_overwrite_orientation: True
  allow_init_with_backwards_motion: True
  max_global_plan_lookahead_dist: 1.0
- feasibility_check_no_poses: 5
     
  # Robot
          
@@ -61,19 +58,7 @@ TebLocalPlannerROS:
  weight_adapt_factor: 2
 
  # Homotopy Class Planner
-
  enable_homotopy_class_planning: False
- enable_multithreading: True
- simple_exploration: False
- max_number_classes: 4
- selection_cost_hysteresis: 1.0
- selection_obst_cost_scale: 1.0
- selection_alternative_time_cost: False
- 
- roadmap_graph_no_samples: 15
- roadmap_graph_area_width: 5
- h_signature_prescaler: 0.5
- h_signature_threshold: 0.1
- obstacle_keypoint_offset: 0.1
- obstacle_heading_threshold: 0.45
- visualize_hc_graph: False
+
+ # Recovery
+ oscillation_recovery: False
