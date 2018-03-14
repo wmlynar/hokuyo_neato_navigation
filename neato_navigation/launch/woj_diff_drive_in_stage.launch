@@ -98,6 +98,6 @@
   </node>
 
   <!--  **************** Visualisation ****************  -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find neato_navigation)/cfg/rviz_navigation.rviz"/>
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find neato_navigation)/cfg/rviz_navigation_woj.rviz"/>
 
 </launch>
