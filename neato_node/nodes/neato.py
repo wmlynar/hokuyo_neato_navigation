@@ -56,12 +56,18 @@ class NeatoNode:
         self.port = rospy.get_param('~port', "/dev/ttyUSB0")
         rospy.loginfo("Using port: %s" % self.port)
 
+        self.odom_topic = rospy.get_param('~odom_topic', "odom")
+        self.dist_topic = rospy.get_param('~dist_topic', "dist")
+        self.cmd_vel_topic = rospy.get_param('~cmd_vel_topic', "cmd_vel")
+        self.base_frame = rospy.get_param('~base_frame', "base_link")
+        self.odom_frame = rospy.get_param('~odom_frame', "odom")
+
         self.robot = Botvac(self.port)
 
-        rospy.Subscriber("cmd_vel", Twist, self.cmdVelCb)
+        rospy.Subscriber(self.cmd_vel_topic, Twist, self.cmdVelCb)
 #        self.scanPub = rospy.Publisher('base_scan', LaserScan, queue_size=10)
-        self.odomPub = rospy.Publisher('odom', Odometry, queue_size=10)
-        self.distPub = rospy.Publisher('dist', Vector3Stamped, queue_size=10)
+        self.odomPub = rospy.Publisher(self.odom_topic, Odometry, queue_size=10)
+        self.distPub = rospy.Publisher(self.dist_topic, Vector3Stamped, queue_size=10)
 #        self.buttonPub = rospy.Publisher('button', Button, queue_size=10)
 #        self.sensorPub = rospy.Publisher('sensor', Sensor, queue_size=10)
         self.odomBroadcaster = TransformBroadcaster()
@@ -86,9 +92,9 @@ class NeatoNode:
  #       scan.range_min = 0.020
  #       scan.range_max = 5.0
 
-        odom = Odometry(header=rospy.Header(frame_id="odom"), child_frame_id='base_link')
+        odom = Odometry(header=rospy.Header(frame_id=self.odom_frame), child_frame_id=self.base_frame)
 
-        dist = Vector3Stamped(header=rospy.Header(frame_id="odom"))
+        dist = Vector3Stamped(header=rospy.Header(frame_id=self.odom_frame))
 
 #        button = Button()
 #        sensor = Sensor()
@@ -177,7 +183,7 @@ class NeatoNode:
 #
             # publish everything
             self.odomBroadcaster.sendTransform((self.x, self.y, 0), (quaternion.x, quaternion.y, quaternion.z,
-                                                                     quaternion.w), then, "base_link", "odom")
+                                                                     quaternion.w), then, self.base_frame, self.odom_frame)
                                                                      
 #            if self.prevRanges != scan.ranges:
 #                self.scanPub.publish(scan)
