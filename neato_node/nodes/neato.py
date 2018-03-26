@@ -62,6 +62,9 @@ class NeatoNode:
         self.base_frame = rospy.get_param('~base_frame', "base_link")
         self.odom_frame = rospy.get_param('~odom_frame', "odom")
 
+        self.cmd_angle_instead_rotvel = rospy.get_param('~cmd_angle_instead_rotvel', False)
+        self.wheelbase = rospy.get_param('~wheelbase', 1)
+
         self.robot = Botvac(self.port)
 
         rospy.Subscriber(self.cmd_vel_topic, Twist, self.cmdVelCb)
@@ -221,7 +224,13 @@ class NeatoNode:
 	else:
 		return-1
 
+    def convertTransSteeringAngleToRotVel(self, v, angle, wheelbase):
+        return tan(angle) * v / wheelbase
+
     def cmdVelCb(self,req):
+        if self.cmd_angle_instead_rotvel:
+            req.angular.z = convertTransSteeringAngleToRotVel(req.linear.x, req.angular.z, self.wheelbase)
+
         x = req.linear.x * 1000
         th = req.angular.z * (self.robot.base_width/2)
         k = max(abs(x-th),abs(x+th))
