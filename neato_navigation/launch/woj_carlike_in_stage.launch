@@ -78,16 +78,16 @@
     <param name="min_particles " value="1000" />
     <param name="max_particles " value="10000" />
 
-    <param name="initial_pose_x" value="1" />
-    <param name="initial_pose_y" value="1" />
-    <param name="initial_pose_a" value="0" />
+    <param name="initial_pose_x" value="2" />
+    <param name="initial_pose_y" value="2" />
+    <param name="initial_pose_a" value="0.0" />
 
-    <param name="initial_cov_xx" value="2" />
-    <param name="initial_cov_yy" value="2" />
-    <param name="initial_cov_aa" value="1" />
+    <param name="initial_cov_xx" value="0.5" />
+    <param name="initial_cov_yy" value="0.5" />
+    <param name="initial_cov_aa" value="0.5" />
 
     <param name="laser_min_range" value="0" />
-    <param name="laser_max_range" value="10" />
+    <param name="laser_max_range" value="30" />
     <param name="laser_max_beams" value="360" />
 
     <param name="odom_alpha1" value="0.1" />
