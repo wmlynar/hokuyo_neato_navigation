@@ -13,7 +13,7 @@
   <param name="/use_sim_time" value="true"/>
 
   <!--  ************** Stage Simulator ***************  -->
-  <node pkg="stage_ros" type="stageros" name="stageros" args="$(find neato_navigation)/stage/maze_carlike_woj.world">
+  <node pkg="stage_ros" type="stageros" name="stageros" args="$(find neato_navigation)/stage/maze_carlike_forklift_woj.world">
     <remap from="base_scan" to="scan"/>
   </node>
 

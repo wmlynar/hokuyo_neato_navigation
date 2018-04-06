@@ -1,4 +1,4 @@
-include "robots/carlike_robot_woj.inc"
+include "robots/carlike_forklift_woj.inc"
 
 
 define floorplan model
