@@ -6,6 +6,7 @@
 
 ```
 mkdir -p neato_sbpl_ws/src
+cd neato_sbpl_ws/src
 git clone https://github.com/wmlynar/hokuyo_neato_navigation.git
 git clone https://github.com/MASKOR/maskor_navigation.git
 cd ..
