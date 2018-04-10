@@ -1,0 +1,43 @@
+<launch>
+  <master auto="start"/>
+  <param name="/use_sim_time" value="true"/>
+
+  <node pkg="stage_ros" type="stageros" name="stageros" args="$(find neato_navigation)/stage/maze_carlike_front_steering_woj.world">
+  </node>
+
+  <node ns="local_costmap" name="voxel_grid_throttle" pkg="topic_tools" type="throttle" args="messages voxel_grid 3.0 voxel_grid_throttled" />
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base_node" output="screen">
+    <param name="footprint_padding" value="0.01" />
+    <param name="controller_frequency" value="10.0" />
+    <param name="controller_patience" value="100.0" />
+    <param name="base_global_planner" value="SBPLLatticePlanner" />
+    <param name="base_local_planner" value="pose_follower/PoseFollower" />
+    <!--param name="SBPLLatticePlanner/primitive_filename" value="$(find sbpl)/matlab/mprim/rover.mprim" /-->
+    <param name="SBPLLatticePlanner/primitive_filename" value="$(find sbpl_lattice_planner)/rover.mprim" />
+
+    <rosparam file="$(find neato_navigation)/cfg/sbpl_front_steering_woj/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find neato_navigation)/cfg/sbpl_front_steering_woj/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find neato_navigation)/cfg/sbpl_front_steering_woj/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find neato_navigation)/cfg/sbpl_front_steering_woj/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find neato_navigation)/cfg/sbpl_front_steering_woj/sbpl_global_params.yaml" command="load" />
+  </node>
+
+<!--  <include file="$(find sbpl_lattice_planner)/launch/move_base/move_base_sbpl.xml"/> -->
+
+
+  <!--  ****** Maps *****  -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find neato_navigation)/maps/maze.yaml" output="screen">
+    <param name="frame_id" value="/map"/>
+  </node>
+
+  <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop">
+    <remap from="cmd_vel" to="cmd_vel"/>
+  </node>
+
+  <node name="fake_localization" pkg="fake_localization" type="fake_localization" respawn="false" />
+
+  <!--include file="$(find sbpl_lattice_planner)/launch/move_base/nav_view_sbpl.xml"/-->
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find neato_navigation)/cfg/rviz_navigation_sbpl.rviz"/>
+
+</launch>
